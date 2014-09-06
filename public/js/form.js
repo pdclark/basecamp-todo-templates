@@ -63,7 +63,7 @@
 		},
 
 		updateEmployeeNames: function(){
-			var inputVal = $(this).val();
+			var inputVal = $(this).val().length > 0 ? $(this).val() : $(this).attr("placeholder");
 
 			self.$employeeNames.each( function(){
 				$(this).text( inputVal );
