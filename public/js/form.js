@@ -1,41 +1,82 @@
 ;(function($){
 
-	var employeePlaceholder = "**Example Team Member**"; // also in controller.php... should be consolidated
+	"use strict";
 
-	var $employeeNames = $("label span:contains(" + employeePlaceholder + ")"),
-			comanyId = $("#company_id").val(),
-			$form = $("form#send_todos"),
-			$templates = $("#templates input"),
-			$response = $("#response"),
-			$project = $("#project");
+	var self = {
 
-	$employeeNames.each( function(){
+		defaultProjectId: 6926969, // Test
+		// defaultProjectId: 6901958, // Orientation
 
-		$(this).html(
-			$(this).html().replace( employeePlaceholder, "<span>" + employeePlaceholder + "</span>" )
-		);
+		// also in controller.php... should be consolidated
+		employeePlaceholder: "**Example Team Member**",
+		companyId: $("#company_id").val(),
 
-	});
+		$form: $("form#send_todos"),
+		$templates: $("#templates input"),
+		$employeeNameInput: $("#employee_name"),
+		$response: $("#response"),
+		$project: $("#project"),
+		$employeeNames: null,
 
-	$employeeNames = $employeeNames.find("span");
+		init: function(){
 
-	$("#employee_name").keyup(function(){
+			self.markEmployeeNames();
+			self.loadProjects();
 
-		var inputVal = $(this).val();
+			self.$employeeNameInput.keyup( self.updateEmployeeNames );
+			self.$form.submit( self.onFormSubmit );
 
-		$employeeNames.each( function(){
-			$(this).text( inputVal );
-		});
+		},
 
-	});
-
-	$form.submit(function( e ){
-		e.preventDefault();
-
-		$templates.filter(":checked").each(function(){
+		loadProjects: function(){
 
 			$.ajax({
-				url:      '/projects/' + $project.val() + '/todolist',
+				url: "/projects/",
+				dataType: "json",
+				success: function( data ){
+
+					self.$project.html("");
+					$.each( data, function( index, project ) {
+						self.$project.append(
+							"<option value=" + project.id + ">" + project.name + "</option>"
+						);
+					});
+
+					// Set default project
+					self.$project.find("option[value=" + self.defaultProjectId + "]").attr("selected", true);
+
+				}
+			});
+
+		},
+
+		markEmployeeNames: function(){
+			self.$employeeNames = $( "label span:contains(" + self.employeePlaceholder + ")" );
+			self.$employeeNames = self.$employeeNames.find("span");
+
+			self.$employeeNames.each( function(){
+				$(this).html(
+					$(this).html().replace( employeePlaceholder, "<span>" + employeePlaceholder + "</span>" )
+				);
+			} );
+		},
+
+		updateEmployeeNames: function(){
+			var inputVal = $(this).val();
+
+			self.$employeeNames.each( function(){
+				$(this).text( inputVal );
+			});
+		},
+
+		onFormSubmit: function( e ){
+			e.preventDefault();
+			self.$templates.filter(":checked").each( self.addTodoList );
+		},
+
+		addTodoList: function() {
+			$.ajax({
+				url:      '/projects/' + self.$project.val() + '/todolist',
 				type:     "POST",
 				dataType: "json",
 				data:     {
@@ -45,37 +86,17 @@
 				},
 
 				success: function( list ){
-					var url = "https://basecamp.com/" + comanyId + "/projects/" + $project.val() + "/todolists/" + list.id;
-					$response.prepend(
+					var url = "https://basecamp.com/" + self.companyId + "/projects/" + self.$project.val() + "/todolists/" + list.id;
+					self.$response.prepend(
 						"<p class='success' role='alert'>Added List: <a target='_blank' href='" + url + "'>" + list.name + "</a></div>"
 					);
 				}
 
 			});
-
-		});
-
-	});
-
-	// Projects
-	$.ajax({
-		url: "/projects/",
-		dataType: "json",
-		success: function( data ){
-
-			$project.html("");
-			$.each( data, function( index, project ) {
-				$project.append(
-					"<option value=" + project.id + ">" + project.name + "</option>"
-				);
-			});
-
-			// Set default project
-			// $project.find("option[value=6901958]").attr("selected", true);
-			$project.find("option[value=6926969]").attr("selected", true);
-
 		}
-	});
 
+	};
+
+	self.init();
 
 })(jQuery);
