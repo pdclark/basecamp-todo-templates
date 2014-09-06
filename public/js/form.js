@@ -52,13 +52,14 @@
 
 		markEmployeeNames: function(){
 			self.$employeeNames = $( "label span:contains(" + self.employeePlaceholder + ")" );
-			self.$employeeNames = self.$employeeNames.find("span");
 
 			self.$employeeNames.each( function(){
 				$(this).html(
-					$(this).html().replace( employeePlaceholder, "<span>" + employeePlaceholder + "</span>" )
+					$(this).html().replace( self.employeePlaceholder, "<span>" + self.employeePlaceholder + "</span>" )
 				);
 			} );
+
+			self.$employeeNames = self.$employeeNames.find("span");
 		},
 
 		updateEmployeeNames: function(){

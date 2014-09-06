@@ -20,7 +20,7 @@
 			Find &amp; Replace
 		</label>
 		<div class="col-sm-6">
-			<input class="form-control" id="employee_name" name="find_replace[**Example Team Member**]" type="text" value="**Example Team Member**" />
+			<input class="form-control" id="employee_name" name="find_replace[**Example Team Member**]" type="text" value="**Example Team Member**" placeholder="**Example Team Member**" />
 		</div>
 	</div>
 

@@ -29,11 +29,14 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 
 		}else {
 
+			$accesses = BasecampProjectsAccessesController::get_instance();
+			$accesses->setProjectId( $project_id );
+
 			$args = array(
 				'project_id' => $project_id,
 				'todo_list_id' => $todo_list_id,
 				'content' => Input::get( 'content' ),
-				'assignee' => Input::get( 'assignee' ),
+				'assignee' => $accesses->getIdByName( Input::get( 'assignee' ) ),
 			);
 
 			$response = $this->storeTodo( $args );
@@ -53,13 +56,16 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 		$todo_list = $template->getTemplateAsArray( $args['file'] );
 		$todo_list = array_shift( $todo_list );
 
+		$accesses = BasecampProjectsAccessesController::get_instance();
+		$accesses->setProjectId( $args['project_id'] );
+
 		foreach( $todo_list['items'] as $todo ) {
 
 			$todo_args = array(
 				'project_id'   => $args['project_id'],
 				'todo_list_id' => $args['todo_list_id'],
 				'content'      => $todo['content'],
-				'assignee'     => $todo['assignee'],
+				'assignee'     => $accesses->getIdByName( $todo['assignee'] ),
 			);
 
 			$response[] = $this->storeTodo( $todo_args );
@@ -80,8 +86,10 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 		);
 
 		if ( ! empty( $args['assignee'] ) ) {
-			// $todo_data['assignee'] = array( 'id' => $args['assignee'], 'type' => 'Person' );
+			$todo_data['assignee'] = array( 'id' => $args['assignee'], 'type' => 'Person' );
 		}
+
+		var_dump( $todo_data );
 
 		return $this->api->createTodoByTodolist( $todo_data );
 	}
