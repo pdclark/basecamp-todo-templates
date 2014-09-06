@@ -4,8 +4,8 @@
 
 	var self = {
 
-		defaultProjectId: 6926969, // Test
-		// defaultProjectId: 6901958, // Orientation
+		// defaultProjectId: 6926969, // Test
+		defaultProjectId: 6901958, // Orientation
 
 		// also in controller.php... should be consolidated
 		employeePlaceholder: "**Example Team Member**",
