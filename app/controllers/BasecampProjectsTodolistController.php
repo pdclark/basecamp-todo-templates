@@ -27,7 +27,7 @@ class BasecampProjectsTodolistController extends BasecampController {
 			$todo_list_response['file'] = Input::get( 'file' );
 			$todos = new BasecampProjectsTodolistTodosController();
 
-			$todo_list_response['todos'] = $todos->store( $project_id, $todo_list_response['id'] );
+			$todo_list_response['todos'] = $todos->storeWithoutResponse( $project_id, $todo_list_response['id'] );
 		}
 
 		return Response::json( $todo_list_response );

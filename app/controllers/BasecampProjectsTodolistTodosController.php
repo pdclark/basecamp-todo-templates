@@ -12,7 +12,10 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 	 * @return Response
 	 */
 	public function store( $project_id, $todo_list_id ) {
+		Response::json( $this->storeDirect( $project_id, $todo_list_id ) );
+	}
 
+	public function storeWithoutResponse( $project_id, $todo_list_id ) {
 		if ( Input::has( 'file' ) ) {
 
 			$args = array(
@@ -37,8 +40,7 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 
 		}
 
-		return Response::json( $response );
-
+		return $response;
 	}
 
 	/**
@@ -57,7 +59,7 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 				'project_id'   => $args['project_id'],
 				'todo_list_id' => $args['todo_list_id'],
 				'content'      => $todo['content'],
-				// 'assignee' => $todo['assignee_id'],
+				'assignee'     => $todo['assignee'],
 			);
 
 			$response[] = $this->storeTodo( $todo_args );
@@ -78,7 +80,7 @@ class BasecampProjectsTodolistTodosController extends BasecampController {
 		);
 
 		if ( ! empty( $args['assignee'] ) ) {
-			$todo_data['assignee'] = array( 'id' => $args['assignee'], 'type' => 'Person' );
+			// $todo_data['assignee'] = array( 'id' => $args['assignee'], 'type' => 'Person' );
 		}
 
 		return $this->api->createTodoByTodolist( $todo_data );
