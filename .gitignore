@@ -7,3 +7,5 @@ composer.lock
 .DS_Store
 Thumbs.db
 .env.local.php
+/app/todo-templates/*.md
+!/app/todo-templates/example.md
