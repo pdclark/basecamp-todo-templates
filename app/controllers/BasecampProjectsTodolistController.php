@@ -11,17 +11,26 @@ class BasecampProjectsTodolistController extends BasecampController {
 	 *
 	 * @return Response
 	 */
-	public function store( $projectId ) {
+	public function store( $project_id ) {
 
-		return Response::json(
-			$this->api->createTodolistByProject(
-				array(
-					'projectId' => $projectId,
-					'name' => Input::get( 'name' ),
-					'description' => Input::get( 'description' ),
-				)
-			)
-		);
+		$template = new TodoTemplatesController();
+
+		$todo_list_response = $this->api->createTodolistByProject( array(
+			'projectId' => $project_id,
+			'name' => $template->maybeFindReplace( Input::get( 'name' ) ),
+			'description' => $template->maybeFindReplace( Input::get( 'description' ) ),
+		) );
+
+
+		// If a template file was provided, add all todo items to the todo list
+		if ( Input::has( 'file' ) ) {
+			$todo_list_response['file'] = Input::get( 'file' );
+			$todos = new BasecampProjectsTodolistTodosController();
+
+			$todo_list_response['todos'] = $todos->store( $project_id, $todo_list_response['id'] );
+		}
+
+		return Response::json( $todo_list_response );
 
 	}
 

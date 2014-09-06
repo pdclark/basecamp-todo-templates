@@ -17,17 +17,17 @@
 
 	<div class="form-group">
 		<label for="employee_name" class="col-sm-3 control-label">
-			Team Member Name
+			Find &amp; Replace
 		</label>
 		<div class="col-sm-6">
-			<input class="form-control" id="employee_name" name="employee_name" type="text" value="Example" />
+			<input class="form-control" id="employee_name" name="find_replace[**Example Team Member**]" type="text" value="**Example Team Member**" />
 		</div>
 	</div>
 
 	<div id="templates" class="form-group">
 		<div class="col-sm-offset-3 col-sm-10">
 
-			<h4>Templates:</h4>
+			<h4>Templates</h4>
 
 			<?php foreach ( $templates->getTemplates() as $file => $template ) : $list_count++ ?>
 				<div class="checkbox">

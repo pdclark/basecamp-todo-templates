@@ -25,6 +25,10 @@ class TodoTemplatesController extends BaseController {
 	}
 
 	public function getTemplateAsArray( $path ) {
+		if ( false === strpos( $path, $this->template_dir ) ) {
+			$path = $this->template_dir . $path;
+		}
+
 		$template = array();
 		$basename = basename( $path );
 
@@ -41,6 +45,7 @@ class TodoTemplatesController extends BaseController {
 				// Heading: Todo list title
 				case '#':
 					$template[ $basename ]['title'] = $this->getListTitle( $line );
+					break;
 
 				// Todo list item
 				case '*':
@@ -58,16 +63,45 @@ class TodoTemplatesController extends BaseController {
 	}
 
 	protected function getListTitle( $title ) {
+		$title = $this->maybeFindReplace( $title );
+
 		return trim( ltrim( $title, '#' ) );
 	}
 
 	protected function getListItem( $content ) {
+		$content = $this->maybeFindReplace( $content );
 		$content = trim( ltrim( $content, '#* ' ) );
 
 		return array(
 			'content'  => $this->removeNameFromContent( $content ),
 			'assignee' => $this->getNameFromContent( $content ),
 		);
+	}
+
+	protected function parseFindReplaceInput() {
+		static $find_replace;
+
+		if ( ! isset( $find_replace ) ) {
+			parse_str( Input::get( 'find_replace' ), $find_replace );
+			$find_replace = array_shift( $find_replace );
+		}
+
+		return $find_replace;
+	}
+
+	public function maybeFindReplace( $content ) {
+		if ( Input::has( 'find_replace' ) ) {
+
+			$find_replace = $this->parseFindReplaceInput();
+
+			$content = str_replace(
+				array_keys( $find_replace ),
+				array_values( $find_replace ),
+				$content
+			);
+		}
+
+		return $content;
 	}
 
 	protected function removeNameFromContent( $content ) {

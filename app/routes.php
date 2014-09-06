@@ -24,3 +24,10 @@ Route::resource(
 	'BasecampProjectsTodolistController',
 	array( 'only' => array( 'store' ) )
 );
+
+// Route::resource(
+// 	'projects.todolist.todos',
+// 	'BasecampProjectsTodolistTodosController',
+// 	array( 'only' => array( 'store' ) )
+// );
+

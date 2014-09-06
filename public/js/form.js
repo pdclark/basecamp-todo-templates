@@ -31,7 +31,7 @@
 		loadProjects: function(){
 
 			$.ajax({
-				url: "/projects/",
+				url: "/projects",
 				dataType: "json",
 				success: function( data ){
 
@@ -82,14 +82,17 @@
 				data:     {
 					name: $(this).next().text(),
 					description: "",
-					file: $(this).val()
+					file: $(this).val(),
+					find_replace: self.$form.find("input[name^='find_replace']").serialize()
 				},
 
 				success: function( list ){
+
 					var url = "https://basecamp.com/" + self.companyId + "/projects/" + self.$project.val() + "/todolists/" + list.id;
 					self.$response.prepend(
-						"<p class='success' role='alert'>Added List: <a target='_blank' href='" + url + "'>" + list.name + "</a></div>"
+						"<p id='response-" + list.id + "' class='success' role='alert'>Created List: <a target='_blank' href='" + url + "'>" + list.name + "</a></div>"
 					);
+
 				}
 
 			});
